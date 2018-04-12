@@ -18,7 +18,7 @@ describe('RemoveOutsideCollaborators', () => {
       }
     }
 
-    payloadAdded = {
+    payloadRemoveCollaborator = {
       action: 'added',
       member: {
         login: 'usr45'
@@ -34,11 +34,11 @@ describe('RemoveOutsideCollaborators', () => {
 
   describe('update', () => {
     beforeEach(() => {
-      spyexecuteRemoval = jest.spyOn(RemoveOutsideCollaborators.prototype, 'executeRemoval')
+      spyExecuteRemoval = jest.spyOn(RemoveOutsideCollaborators.prototype, 'executeRemoval')
       spyMonitorOnly = jest.spyOn(RemoveOutsideCollaborators.prototype, 'executeMonitorOnly')
     })
     afterEach(function () {
-      spyexecuteRemoval.mockClear()
+      spyExecuteRemoval.mockClear()
       spyMonitorOnly.mockClear()
     })
 
@@ -48,7 +48,7 @@ describe('RemoveOutsideCollaborators', () => {
         enableCollaboratorRemoval: false
       `)
       config.update()
-      expect(spyexecuteRemoval).not.toHaveBeenCalled()
+      expect(spyExecuteRemoval).not.toHaveBeenCalled()
       expect(spyMonitorOnly).toHaveBeenCalled()
     })
 
@@ -58,26 +58,26 @@ describe('RemoveOutsideCollaborators', () => {
         enableCollaboratorRemoval: true
       `)
       config.update()
-      expect(spyexecuteRemoval).not.toHaveBeenCalled()
+      expect(spyExecuteRemoval).not.toHaveBeenCalled()
       expect(spyMonitorOnly).toHaveBeenCalled()
     })
 
-    it('added and the member is whitelisted', () => {
+    it('added and the collaborator is whitelisted', () => {
       const config = configure(payloadRemoveCollaborator, `
         excludeCollaborators: ['test-pro1', 'test-pro']
       `)
       config.update()
-      expect(spyexecuteRemoval).not.toHaveBeenCalled()
+      expect(spyExecuteRemoval).not.toHaveBeenCalled()
       expect(spyMonitorOnly).not.toHaveBeenCalled()
     })
 
-    it('added and the member is not whitelisted', () => {
+    it('added and the collaborator is not whitelisted', () => {
       const config = configure(payloadRemoveCollaborator, `
         monitorOnly: true
-        excludeRepos: ['test-pro2', test-pro3]
+        excludeCollaborators: ['test-pro2', test-pro3]
       `)
       config.update()
-      expect(spyexecuteRemoval).not.toHaveBeenCalled()
+      expect(spyExecuteRemoval).not.toHaveBeenCalled()
       expect(spyMonitorOnly).toHaveBeenCalled()
     })
 
@@ -87,7 +87,7 @@ describe('RemoveOutsideCollaborators', () => {
         monitorIssueTitle: 'Monitor Only Mode! '
       `)
       config.update()
-      expect(spyexecuteRemoval).not.toHaveBeenCalled()
+      expect(spyExecuteRemoval).not.toHaveBeenCalled()
       expect(spyMonitorOnly).toHaveBeenCalled()
     })
 
@@ -96,7 +96,7 @@ describe('RemoveOutsideCollaborators', () => {
         monitorOnly: false
       `)
       config.update()
-      expect(spyexecuteRemoval).toHaveBeenCalled()
+      expect(spyExecuteRemoval).toHaveBeenCalled()
       expect(spyMonitorOnly).not.toHaveBeenCalled()
     })
   })
@@ -134,7 +134,7 @@ describe('RemoveOutsideCollaborators', () => {
     it('removeCollaborator from repo', () => {
       const config = configure(payloadRemoveCollaborator, ``)
       config.removeCollaborator()
-      expect(github.repos.edit).toHaveBeenCalledWith({
+      expect(github.repos.removeCollaborator).toHaveBeenCalledWith({
         owner: 'hollywood',
         repo: 'test',
         username: 'Usr45'
@@ -164,7 +164,7 @@ describe('RemoveOutsideCollaborators', () => {
     it('executeRemoval', () => {
       var spyFormIssueBody = jest.spyOn(RemoveOutsideCollaborators.prototype, 'formIssueBody')
       var spyCreateIssue = jest.spyOn(RemoveOutsideCollaborators.prototype, 'createIssue')
-      var spyChangeVisibility = jest.spyOn(RemoveOutsideCollaborators.prototype, 'removeCollaborator')
+      var spyRemoveCollaborator = jest.spyOn(RemoveOutsideCollaborators.prototype, 'removeCollaborator')
       const config = configure(payloadRemoveCollaborator, `
         monitorIssueBody: "MonitorIssueBodyText"
         ccList: "@Security-Admin"
@@ -176,7 +176,7 @@ describe('RemoveOutsideCollaborators', () => {
       })
       expect(spyFormIssueBody).toHaveBeenCalledWith('MonitorIssueBodyText', '@Security-Admin')
       expect(spyCreateIssue).toHaveBeenCalled()
-      expect(spyChangeVisibility).toHaveBeenCalled()
+      expect(spyRemoveCollaborator).toHaveBeenCalled()
     })
   })
 })
