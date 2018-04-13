@@ -124,5 +124,8 @@
     "received_events_url": "https://api.github.com/users/hollywood/received_events",
     "type": "User",
     "site_admin": false
+  },
+  "installation": {
+    "id": 10985
   }
 }
