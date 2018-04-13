@@ -1,33 +1,36 @@
-const RemoveOutsideCollaborators = require('../lib/RemoveOutsideCollaborators')
+const RemoveOutsideCollaborators = require('../../../lib/RemoveOutsideCollaborators')
 
-describe('RemoveOutsideCollaborators', () => {
+describe('removeOutsideCollaborators', () => {
   let github
 
   function configure (payload, yaml) {
     return new RemoveOutsideCollaborators(github, {owner: 'hollywood', repo: 'test', username: 'usr45'}, payload, console, yaml)
   }
 
+  payloadRemoveCollaborator = {
+    action: 'added',
+    member: {
+      login: 'usr45'
+    },
+    repository: {
+      name: 'test',
+      owner: {
+        login: 'hollywood'
+      }
+    },
+    sender: {
+      login: 'hollywood'
+    }
+  }
+
   beforeEach(() => {
     github = {
       repos: {
-        edit: jest.fn().mockImplementation(() => Promise.resolve()),
+        removeCollaborator: jest.fn().mockImplementation(() => Promise.resolve()),
         getContent: jest.fn().mockImplementation(() => Promise.resolve())
       },
       issues: {
         create: jest.fn().mockImplementation(() => Promise.resolve([]))
-      }
-    }
-
-    payloadRemoveCollaborator = {
-      action: 'added',
-      member: {
-        login: 'usr45'
-      },
-      repository: {
-        name: 'test'
-      },
-      sender: {
-        login: 'hollywood'
       }
     }
   })
@@ -64,7 +67,7 @@ describe('RemoveOutsideCollaborators', () => {
 
     it('added and the collaborator is whitelisted', () => {
       const config = configure(payloadRemoveCollaborator, `
-        excludeCollaborators: ['test-pro1', 'test-pro']
+        excludeCollaborators: ["usr45"]
       `)
       config.update()
       expect(spyExecuteRemoval).not.toHaveBeenCalled()
@@ -125,7 +128,8 @@ describe('RemoveOutsideCollaborators', () => {
         owner: 'hollywood',
         repo: 'test',
         title: 'TitleTest',
-        body: 'BodyTest'
+        body: 'BodyTest',
+        username: 'usr45'
       })
     })
   })
@@ -137,7 +141,7 @@ describe('RemoveOutsideCollaborators', () => {
       expect(github.repos.removeCollaborator).toHaveBeenCalledWith({
         owner: 'hollywood',
         repo: 'test',
-        username: 'Usr45'
+        username: 'usr45'
       })
     })
   })
