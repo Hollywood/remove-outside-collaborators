@@ -7,6 +7,22 @@ describe('removeOutsideCollaborators', () => {
     return new RemoveOutsideCollaborators(github, {owner: 'hollywood', repo: 'test', username: 'usr45'}, payload, console, yaml)
   }
 
+  payloadRemoveCollaborator = {
+    action: 'added',
+    member: {
+      login: 'usr45'
+    },
+    repository: {
+      name: 'test',
+      owner: {
+        login: 'hollywood'
+      }
+    },
+    sender: {
+      login: 'hollywood'
+    }
+  }
+
   beforeEach(() => {
     github = {
       repos: {
@@ -15,22 +31,6 @@ describe('removeOutsideCollaborators', () => {
       },
       issues: {
         create: jest.fn().mockImplementation(() => Promise.resolve([]))
-      }
-    }
-
-    payloadRemoveCollaborator = {
-      action: 'added',
-      member: {
-        login: 'usr45'
-      },
-      repository: {
-        name: 'test',
-        owner: {
-          login: 'hollywood'
-        }
-      },
-      sender: {
-        login: 'hollywood'
       }
     }
   })
