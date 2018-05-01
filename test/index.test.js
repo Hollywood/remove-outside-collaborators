@@ -36,4 +36,11 @@ describe('plugin', () => {
       username: 'usr45'
     })
   })
+
+  it.only('does not remove the collaborator in monitorOnly mode', async () => {
+    const content = Buffer.from('monitorOnly: true', 'utf8')
+    github.repos.getContent.mockReturnValueOnce(Promise.resolve({ data: { content } }))
+    await robot.receive(event)
+    expect(github.repos.removeCollaborator).not.toHaveBeenCalled()
+  })
 })

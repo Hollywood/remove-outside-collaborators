@@ -11,17 +11,18 @@ module.exports = robot => {
     let cfg = {}
 
     try {
-      const orgConfig = await github.repos.getContent({
-        owner: repo.owner,
+      const orgConfig = await context.github.repos.getContent(context.repo({
         repo: orgRepo,
         path: filename
-      })
+      }))
 
       const content = Buffer.from(orgConfig.data.content, 'base64').toString()
       cfg = yaml.safeLoad(content)
-    } catch (e) {}
+    } catch (e) {
+      context.log.error(e)
+    }
 
-    const config = { ...defaults, cfg }
+    const config = { ...defaults, ...cfg }
 
     if (!config.enableCollaboratorRemoval && !config.monitorOnly) return
     if (config.excludeCollaborators.includes(member)) return
