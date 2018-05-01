@@ -7,7 +7,7 @@ describe('removeOutsideCollaborators', () => {
     return new RemoveOutsideCollaborators(github, {owner: 'Hollywood', repo: 'test', username: 'Usr45'}, payload, console, yaml)
   }
 
-  payloadRemoveCollaborator = { action: "added", member: { login: "Usr45" }, repository: { name: "test", owner: { login: "Usr45" } }, sender: { login: "Usr45" } };
+  let payloadRemoveCollaborator = { action: 'added', member: { login: 'Usr45' }, repository: { name: 'test', owner: { login: 'Usr45' } }, sender: { login: 'Usr45' } };
 
   beforeEach(() => {
     github = {
