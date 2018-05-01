@@ -37,7 +37,7 @@ describe('plugin', () => {
     })
   })
 
-  it.only('does not remove the collaborator in monitorOnly mode', async () => {
+  it('does not remove the collaborator in monitorOnly mode', async () => {
     const content = Buffer.from('monitorOnly: true', 'utf8')
     github.repos.getContent.mockReturnValueOnce(Promise.resolve({ data: { content } }))
     await robot.receive(event)
