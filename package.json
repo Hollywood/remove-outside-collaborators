@@ -25,5 +25,10 @@
     "env": [
       "jest"
     ]
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/test/setup.js"
+    ]
   }
 }
