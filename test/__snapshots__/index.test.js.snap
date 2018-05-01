@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plugin opens an issue 1`] = `
+Object {
+  "body": "<h3 align=\\"center\\">NOTE: Outside Collaborators cannot be added to this Org. Please contact an Admin to override.</h3>
+<p align=\\"center\\">Collaborator added: <strong>hollywood</strong></p>
+
+---
+
+",
+  "owner": "hollywood",
+  "repo": "test",
+  "title": "[CRITICAL] An Outside Collaborator has been removed!",
+}
+`;

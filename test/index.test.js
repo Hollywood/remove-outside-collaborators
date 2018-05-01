@@ -1,30 +1,39 @@
 const {createRobot} = require('probot')
 const plugin = require('../index')
+const payload = require('./fixtures/events/collaborator.added.json')
 
 describe('plugin', () => {
-  let robot
-  let event
-  let analyze
+  let robot, event, github
 
   beforeEach(() => {
     robot = createRobot()
-    robot.auth = () => Promise.resolve({})
+    github = {
+      issues: {
+        create: jest.fn()
+      },
+      repos: {
+        getContent: jest.fn(),
+        removeCollaborator: jest.fn()
+      }
+    }
+    robot.auth = () => Promise.resolve(github)
+    plugin(robot)
 
-    analyze = jest.fn()
-
-    plugin(robot, {}, { analyze })
+    event = { event: 'member', payload }
   })
 
-  describe('analyzes on added collaborator', () => {
-    beforeEach(() => {
-      event = {
-        event: 'member',
-        payload: JSON.parse(JSON.stringify(require('./fixtures/events/collaborator.added.json')))
-      }
-    })
-    it('analyzes member', async () => {
-      await robot.receive(event)
-      expect(analyze).toHaveBeenCalled()
+  it('opens an issue', async () => {
+    await robot.receive(event)
+    expect(github.issues.create).toHaveBeenCalled()
+    expect(github.issues.create.mock.calls[0][0]).toMatchSnapshot()
+  })
+
+  it('removes the added collaborator', async () => {
+    await robot.receive(event)
+    expect(github.repos.removeCollaborator).toHaveBeenCalledWith({
+      owner: 'hollywood',
+      repo: 'test',
+      username: 'usr45'
     })
   })
 })
