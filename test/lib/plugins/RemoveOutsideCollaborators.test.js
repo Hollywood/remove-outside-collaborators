@@ -7,7 +7,7 @@ describe('removeOutsideCollaborators', () => {
     return new RemoveOutsideCollaborators(github, {owner: 'hollywood', repo: 'test', username: 'usr45'}, payload, console, yaml)
   }
 
-  payloadRemoveCollaborator = {
+  let payloadRemoveCollaborator = {
     action: 'added',
     member: {
       login: 'usr45'
