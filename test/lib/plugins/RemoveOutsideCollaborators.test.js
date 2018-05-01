@@ -4,24 +4,10 @@ describe('removeOutsideCollaborators', () => {
   let github
 
   function configure (payload, yaml) {
-    return new RemoveOutsideCollaborators(github, {owner: 'hollywood', repo: 'test', username: 'usr45'}, payload, console, yaml)
+    return new RemoveOutsideCollaborators(github, {owner: 'Hollywood', repo: 'test', username: 'Usr45'}, payload, console, yaml)
   }
 
-  payloadRemoveCollaborator = {
-    action: 'added',
-    member: {
-      login: 'usr45'
-    },
-    repository: {
-      name: 'test',
-      owner: {
-        login: 'hollywood'
-      }
-    },
-    sender: {
-      login: 'hollywood'
-    }
-  }
+  payloadRemoveCollaborator = { action: "added", member: { login: "Usr45" }, repository: { name: "test", owner: { login: "Usr45" } }, sender: { login: "Usr45" } };
 
   beforeEach(() => {
     github = {
@@ -67,7 +53,7 @@ describe('removeOutsideCollaborators', () => {
 
     it('added and the collaborator is whitelisted', () => {
       const config = configure(payloadRemoveCollaborator, `
-        excludeCollaborators: ["usr45"]
+        excludeCollaborators: ['Usr45']
       `)
       config.update()
       expect(spyExecuteRemoval).not.toHaveBeenCalled()
@@ -107,29 +93,30 @@ describe('removeOutsideCollaborators', () => {
   describe('formIssueBody', () => {
     it('formIssueBody with ccList', () => {
       const config = configure(payloadRemoveCollaborator, `
-        ccList: "@Security-Admin"
-      `)
-      var issueBody = config.formIssueBody('test123', '@Security-Admin')
-      expect(issueBody).toEqual('test123\n\n/cc @hollywood\n/cc @Security-Admin')
+        monitorIssueBody: '<h3 align="center">MonitorIssueBodyText</h3>'
+        ccList: '@Security-Admin'
+      `);
+      var issueBody = config.formIssueBody(`<h3 align="center">${config.monitorIssueBody}</h3>`, "@Security-Admin");
+      expect(issueBody).toEqual(`<h3 align="center">${config.monitorIssueBody}</h3>\n\n<p align="center">Collaborator added: <strong>Usr45</strong></p>\n\n---\n\n<h6 align="center">/cc @Security-Admin</h6>`);
     })
 
     it('formIssueBody with no ccList', () => {
       const config = configure(payloadRemoveCollaborator, ``)
-      var issueBody = config.formIssueBody('test123', '')
-      expect(issueBody).toEqual('test123\n\n/cc @hollywood')
+      var issueBody = config.formIssueBody(`<h3 align="center">${config.monitorIssueBody}</h3>`, "");
+      expect(issueBody).toEqual(`<h3 align="center">${config.monitorIssueBody}</h3>\n\n<p align="center">Collaborator added: <strong>Usr45</strong></p>\n\n---`);
     })
   })
 
   describe('createIssue', () => {
-    it('creatIssue with Title and Body', () => {
+    it('createIssue with Title and Body', () => {
       const config = configure(payloadRemoveCollaborator, ``)
       config.createIssue('TitleTest', 'BodyTest')
       expect(github.issues.create).toHaveBeenCalledWith({
-        owner: 'hollywood',
+        owner: 'Hollywood',
         repo: 'test',
         title: 'TitleTest',
         body: 'BodyTest',
-        username: 'usr45'
+        username: 'Usr45'
       })
     })
   })
@@ -139,9 +126,9 @@ describe('removeOutsideCollaborators', () => {
       const config = configure(payloadRemoveCollaborator, ``)
       config.removeCollaborator()
       expect(github.repos.removeCollaborator).toHaveBeenCalledWith({
-        owner: 'hollywood',
+        owner: 'Usr45',
         repo: 'test',
-        username: 'usr45'
+        username: 'Usr45'
       })
     })
   })
@@ -151,15 +138,15 @@ describe('removeOutsideCollaborators', () => {
       var spyFormIssueBody = jest.spyOn(RemoveOutsideCollaborators.prototype, 'formIssueBody')
       var spyCreateIssue = jest.spyOn(RemoveOutsideCollaborators.prototype, 'createIssue')
       const config = configure(payloadRemoveCollaborator, `
-        monitorIssueBody: "MonitorIssueBodyText"
-        ccList: "@Security-Admin"
-        `)
+        monitorIssueBody: '<h3 align="center">MonitorIssueBodyText</h3>'
+        ccList: '@Security-Admin'
+        `);
       config.executeMonitorOnly({
         monitorIssueTitle: 'MonitorIssueTitleText',
         monitorIssueBody: 'MonitorIssueBodyText',
         ccList: '@Security-Admin'
-      })
-      expect(spyFormIssueBody).toHaveBeenCalledWith('MonitorIssueBodyText', '@Security-Admin')
+      });
+      expect(spyFormIssueBody).toHaveBeenCalledWith(`<h3 align="center">MonitorIssueBodyText</h3>`, '@Security-Admin');
       expect(spyCreateIssue).toHaveBeenCalled()
     })
   })
@@ -170,15 +157,15 @@ describe('removeOutsideCollaborators', () => {
       var spyCreateIssue = jest.spyOn(RemoveOutsideCollaborators.prototype, 'createIssue')
       var spyRemoveCollaborator = jest.spyOn(RemoveOutsideCollaborators.prototype, 'removeCollaborator')
       const config = configure(payloadRemoveCollaborator, `
-        monitorIssueBody: "MonitorIssueBodyText"
-        ccList: "@Security-Admin"
-        `)
+        monitorIssueBody: '<h3 align="center">MonitorIssueBodyText</h3>'
+        ccList: '@Security-Admin'
+        `);
       config.executeRemoval({
         monitorIssueTitle: 'MonitorIssueTitleText',
-        monitorIssueBody: 'MonitorIssueBodyText',
+        monitorIssueBody: `<h3 align="center">${config.monitorIssueBody}</h3>`,
         ccList: '@Security-Admin'
-      })
-      expect(spyFormIssueBody).toHaveBeenCalledWith('MonitorIssueBodyText', '@Security-Admin')
+      });
+      expect(spyFormIssueBody).toHaveBeenCalledWith('<h3 align="center">MonitorIssueBodyText</h3>', '@Security-Admin');
       expect(spyCreateIssue).toHaveBeenCalled()
       expect(spyRemoveCollaborator).toHaveBeenCalled()
     })
