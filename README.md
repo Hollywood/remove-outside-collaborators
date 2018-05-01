@@ -36,7 +36,7 @@ enableCollaboratorRemoval: true
 removedIssueTitle: '[CRITICAL] An Outside Collaborator has been added to this Repository!'
 
 # Issue Body when an Outside Collaborator is added
-removedIssueBody: 'NOTE: Outside Collaborators are disabled for this organization! This member has been removed. Please contact an admin to override.'
+removedIssueBody: 'NOTE: Outside Collaborators are disabled for this organization! <br/> This member has been removed. Please contact an admin to override.'
 
 # Issue Title when monitor mode is enabled
 monitorIssueTitle: '[CRITICAL] Outside Collaborator Added'
