@@ -7,7 +7,7 @@ describe('removeOutsideCollaborators', () => {
     return new RemoveOutsideCollaborators(github, {owner: 'Hollywood', repo: 'test', username: 'Usr45'}, payload, console, yaml)
   }
 
-  let payloadRemoveCollaborator = { action: 'added', member: { login: 'Usr45' }, repository: { name: 'test', owner: { login: 'Usr45' } }, sender: { login: 'Usr45' } }
+  let payloadRemoveCollaborator = { action: 'added', member: { login: 'Usr45' }, repository: { name: 'test', owner: { login: 'Usr45' } }, organization: { login: 'Albatoss'}, sender: { login: 'Usr45' } }
 
   beforeEach(() => {
     github = {
@@ -17,6 +17,9 @@ describe('removeOutsideCollaborators', () => {
       },
       issues: {
         create: jest.fn().mockImplementation(() => Promise.resolve([]))
+      }, 
+      orgs: {
+        getOrgMembership: jest.fn().mockImplementation(() => Promise.resolve([]))
       }
     }
   })
@@ -26,13 +29,19 @@ describe('removeOutsideCollaborators', () => {
     var spyMonitorOnly
 
     beforeEach(() => {
+      spyIsOrgMember = jest.spyOn(RemoveOutsideCollaborators.prototype, 'isRepoAddedByOrgMember')
       spyExecuteRemoval = jest.spyOn(RemoveOutsideCollaborators.prototype, 'executeRemoval')
       spyMonitorOnly = jest.spyOn(RemoveOutsideCollaborators.prototype, 'executeMonitorOnly')
     })
     afterEach(function () {
+      spyIsOrgMember.mockClear()
       spyExecuteRemoval.mockClear()
       spyMonitorOnly.mockClear()
     })
+
+    it('repo created by an org member', () => {
+       expect(spyExecuteRemoval).not.toHaveBeenCalled()
+     })
 
     it('added and enableCollaboratorRemoval is disabled', () => {
       const config = configure(payloadRemoveCollaborator, `
