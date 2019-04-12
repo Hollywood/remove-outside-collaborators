@@ -1,4 +1,4 @@
-const {createRobot} = require('probot')
+const { createRobot } = require('probot')
 const plugin = require('../index')
 
 describe('plugin', () => {
