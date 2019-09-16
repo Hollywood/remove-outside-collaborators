@@ -1,7 +1,7 @@
 {
   "name": "remove-outside-collaborators",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "Probot app for removing outside (non-org) collaborators from a repository within an organization.",
   "author": "Jonathan Cardona <hollywood@github.com>",
   "license": "ISC",
   "repository": "https://github.com/hollywood/remove-outside-collaborators.git",
@@ -10,20 +10,24 @@
     "test": "jest && standard"
   },
   "dependencies": {
-    "probot": "^6.1.0"
+    "probot": "^6.2.1"
   },
   "devDependencies": {
-    "jest": "^22.4.3",
-    "localtunnel": "^1.9.0",
-    "standard": "^11.0.1"
+    "jest": "^24.7.1",
+    "smee-client": "^1.1.0",
+    "standard": "^12.0.1"
   },
   "engines": {
     "node": "^8.6.0",
-    "npm": "^5.5.1"
+    "npm": "^5.3.0"
   },
   "standard": {
     "env": [
       "jest"
     ]
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
   }
 }
