@@ -1,11 +1,12 @@
 {
   "name": "remove-outside-collaborators",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Probot app for removing outside (non-org) collaborators from a repository within an organization.",
   "author": "Jonathan Cardona <hollywood@github.com>",
   "license": "ISC",
   "repository": "https://github.com/hollywood/remove-outside-collaborators.git",
   "scripts": {
+    "postversion": "git push --all && git push --tags",
     "start": "probot run ./index.js",
     "test": "jest && standard"
   },
