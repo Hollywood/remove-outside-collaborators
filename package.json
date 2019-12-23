@@ -6,6 +6,7 @@
   "license": "ISC",
   "repository": "https://github.com/hollywood/remove-outside-collaborators.git",
   "scripts": {
+    "postversion": "git push --all && git push --tags",
     "start": "probot run ./index.js",
     "test": "jest && standard"
   },
