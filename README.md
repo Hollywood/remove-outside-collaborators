@@ -16,6 +16,7 @@ A GitHub Probot App that monitors and instantly removes any Outside Collaborator
 1. [Configure the GitHub App](https://github.com/apps/remove-outside-collaborators)
 2. [Recommended] Create repo named `org-settings` and in it a file `.github/remove-outside-collaborators.yml` as described in the [How it Works](#How-it-Works) section to configure settings (and override defaults)
 3. It will then prevent any outside collaborators (other than any whitelisted members) from being added to your organization.
+4.
 
 ## How it Works
 
